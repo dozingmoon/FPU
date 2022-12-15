@@ -1,6 +1,5 @@
-//	*****************************	//
+
 //	IEEE 754 SINGLE PRECISION ALU	//
-//	*****************************	//
 
 module fpu(	out, nan_in, overflow, in_exact, zero, op_nan
 			, clk_in, rst, opa_in, opb_in, mode_in, op_code)
@@ -48,6 +47,72 @@ assign overflow = ;
 assign DIV = (op_code == 2'b10);
 assign MUL = (op_code == 2'b11);*/
 
+task Addition_normaliser; begin
+//	Addition_normaliser
+if (i_m[23:3] == 21'b000000000000000000001) begin
+	o_e = i_e - 20;
+	o_m = i_m << 20;
+end else if (i_m[23:4] == 20'b00000000000000000001) begin
+	o_e = i_e - 19;
+	o_m = i_m << 19;
+end else if (i_m[23:5] == 19'b0000000000000000001) begin
+	o_e = i_e - 18;
+	o_m = i_m << 18;
+end else if (i_m[23:6] == 18'b000000000000000001) begin
+	o_e = i_e - 17;
+	o_m = i_m << 17;
+end else if (i_m[23:7] == 17'b00000000000000001) begin
+	o_e = i_e - 16;
+	o_m = i_m << 16;
+end else if (i_m[23:8] == 16'b0000000000000001) begin
+	o_e = i_e - 15;
+	o_m = i_m << 15;
+end else if (i_m[23:9] == 15'b000000000000001) begin
+	o_e = i_e - 14;
+	o_m = i_m << 14;
+end else if (i_m[23:10] == 14'b00000000000001) begin
+	o_e = i_e - 13;
+	o_m = i_m << 13;
+end else if (i_m[23:11] == 13'b0000000000001) begin
+	o_e = i_e - 12;
+	o_m = i_m << 12;
+end else if (i_m[23:12] == 12'b000000000001) begin
+	o_e = i_e - 11;
+	o_m = i_m << 11;
+end else if (i_m[23:13] == 11'b00000000001) begin
+	o_e = i_e - 10;
+	o_m = i_m << 10;
+end else if (i_m[23:14] == 10'b0000000001) begin
+	o_e = i_e - 9;
+	o_m = i_m << 9;
+end else if (i_m[23:15] == 9'b000000001) begin
+	o_e = i_e - 8;
+	o_m = i_m << 8;
+end else if (i_m[23:16] == 8'b00000001) begin
+	o_e = i_e - 7;
+	o_m = i_m << 7;
+end else if (i_m[23:17] == 7'b0000001) begin
+	o_e = i_e - 6;
+	o_m = i_m << 6;
+end else if (i_m[23:18] == 6'b000001) begin
+	o_e = i_e - 5;
+	o_m = i_m << 5;
+end else if (i_m[23:19] == 5'b00001) begin
+	o_e = i_e - 4;
+	o_m = i_m << 4;
+end else if (i_m[23:20] == 4'b0001) begin
+	o_e = i_e - 3;
+	o_m = i_m << 3;
+end else if (i_m[23:21] == 3'b001) begin
+	o_e = i_e - 2;
+	o_m = i_m << 2;
+end else if (i_m[23:22] == 2'b01) begin
+	o_e = i_e - 1;
+	o_m = i_m << 1;
+end
+end
+endtask
+
 always @ (posedge clk_in) begin
 	if(rst) begin
 		o_sign = 1'bz;
@@ -56,73 +121,9 @@ always @ (posedge clk_in) begin
 	end
 	else begin
 		case(op_code)
-		
 		//	Adder
 		`ADD: begin
-		
-			//	Addition_normaliser
-			if (i_m[23:3] == 21'b000000000000000000001) begin
-				o_e = i_e - 20;
-				o_m = i_m << 20;
-			end else if (i_m[23:4] == 20'b00000000000000000001) begin
-				o_e = i_e - 19;
-				o_m = i_m << 19;
-			end else if (i_m[23:5] == 19'b0000000000000000001) begin
-				o_e = i_e - 18;
-				o_m = i_m << 18;
-			end else if (i_m[23:6] == 18'b000000000000000001) begin
-				o_e = i_e - 17;
-				o_m = i_m << 17;
-			end else if (i_m[23:7] == 17'b00000000000000001) begin
-				o_e = i_e - 16;
-				o_m = i_m << 16;
-			end else if (i_m[23:8] == 16'b0000000000000001) begin
-				o_e = i_e - 15;
-				o_m = i_m << 15;
-			end else if (i_m[23:9] == 15'b000000000000001) begin
-				o_e = i_e - 14;
-				o_m = i_m << 14;
-			end else if (i_m[23:10] == 14'b00000000000001) begin
-				o_e = i_e - 13;
-				o_m = i_m << 13;
-			end else if (i_m[23:11] == 13'b0000000000001) begin
-				o_e = i_e - 12;
-				o_m = i_m << 12;
-			end else if (i_m[23:12] == 12'b000000000001) begin
-				o_e = i_e - 11;
-				o_m = i_m << 11;
-			end else if (i_m[23:13] == 11'b00000000001) begin
-				o_e = i_e - 10;
-				o_m = i_m << 10;
-			end else if (i_m[23:14] == 10'b0000000001) begin
-				o_e = i_e - 9;
-				o_m = i_m << 9;
-			end else if (i_m[23:15] == 9'b000000001) begin
-				o_e = i_e - 8;
-				o_m = i_m << 8;
-			end else if (i_m[23:16] == 8'b00000001) begin
-				o_e = i_e - 7;
-				o_m = i_m << 7;
-			end else if (i_m[23:17] == 7'b0000001) begin
-				o_e = i_e - 6;
-				o_m = i_m << 6;
-			end else if (i_m[23:18] == 6'b000001) begin
-				o_e = i_e - 5;
-				o_m = i_m << 5;
-			end else if (i_m[23:19] == 5'b00001) begin
-				o_e = i_e - 4;
-				o_m = i_m << 4;
-			end else if (i_m[23:20] == 4'b0001) begin
-				o_e = i_e - 3;
-				o_m = i_m << 3;
-			end else if (i_m[23:21] == 3'b001) begin
-				o_e = i_e - 2;
-				o_m = i_m << 2;
-			end else if (i_m[23:22] == 2'b01) begin
-				o_e = i_e - 1;
-				o_m = i_m << 1;
-			end
-			
+			Addition_normaliser;
 			if (a_exponent == b_exponent) begin // Equal exponents
 				o_exponent = a_exponent;
 				if (a_sign == b_sign) begin // Equal signs = add
@@ -164,13 +165,13 @@ always @ (posedge clk_in) begin
 				end
 			end
 			if(o_mantissa[24] == 1) begin
-			  o_exponent = o_exponent + 1;
-			  o_mantissa = o_mantissa >> 1;
+				o_exponent = o_exponent + 1;
+				o_mantissa = o_mantissa >> 1;
 			end else if((o_mantissa[23] != 1) && (o_exponent != 0)) begin
-			  i_e = o_exponent;
-			  i_m = o_mantissa;
-			  o_exponent = o_e;
-			  o_mantissa = o_m;
+				i_e = o_exponent;
+				i_m = o_mantissa;
+				o_exponent = o_e;
+				o_mantissa = o_m;
 			end
 		end
 	endcase
@@ -248,14 +249,5 @@ reg  [7:0] i_e;
 reg  [24:0] i_m;
 wire [7:0] o_e;
 wire [24:0] o_m;
-
-/*
-addition_normaliser norm1
-(
-.in_e(i_e),
-.in_m(i_m),
-.out_e(o_e),
-.out_m(o_m)
-);*/
 
 endmodule
