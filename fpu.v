@@ -1,5 +1,5 @@
 
-//	IEEE 754 SINGLE PRECISION ALU	//https://github.com/dozingmoon/FPU/blob/main/fpu.v
+//	IEEE 754 SINGLE PRECISION ALU	//
 
 module fpu(	out, nan_in, overflow, in_exact, zero, op_nan
 			, clk_in, rst, opa_in, opb_in, mode_in, op_code)
@@ -10,10 +10,10 @@ input	[4:0]	op_code;
 input	[1:0]	mode_in;
 input	clk_in, rst;
 
-wire 	[7:0] 	a_exp	= opa_in[30:23];
-wire 	[22:0] 	a_frac	= opa_in[22:0];
-wire 	[7:0] 	b_exp	= opb_in[30:23];
-wire 	[22:0] 	b_frac	= opb_in[22:0];	
+wire 	[7:0] 	a_exponent	= opa_in[30:23];
+wire 	[22:0] 	a_mantissa	= opa_in[22:0];
+wire 	[7:0] 	b_exponent	= opb_in[30:23];
+wire 	[22:0] 	b_mantissa	= opb_in[22:0];	
 reg        o_sign;
 reg [7:0]  o_exp;
 reg [24:0] o_frac;
@@ -178,6 +178,9 @@ always @ (posedge clk_in) begin
 			Adder;
 			Addition_normaliser;
 		end
+		default:begin
+			
+		end
 	endcase
 end
 
@@ -185,7 +188,7 @@ always @ ( * )begin
 	case(op_code)
 	`ADD: begin
 		//If a is NaN or b is zero return a
-		if ((a_exp == 255 && a_frac != 0) || (b_exp == 0) && (b_mantissa == 0)) begin
+		if ((a_exp == 255 && a_mantissa != 0) || (b_exponent == 0) && (b_mantissa == 0)) begin
 			o_sign = a_sign;
 			o_exponent = a_exponent;
 			o_mantissa = a_mantissa;
@@ -200,15 +203,21 @@ always @ ( * )begin
 			o_exponent = 255;
 			o_mantissa = 0;
 		end else begin // Passed all corner cases
+		
 			adder_a_in = A;
 			adder_b_in = B;
 			o_sign = adder_out[31];
 			o_exponent = adder_out[30:23];
 			o_mantissa = adder_out[22:0];
+			
+			o_mantissa[31] = (a_exponent>b_exponent)?a_exponent:b_exponent;
+			o_mantissa[30:23]
+			o_mantissa[22:0]
+			
 		end
 	`SUB: begin
-		end
 	
+		end
 	endcase
 end
 endmodule
